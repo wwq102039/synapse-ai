@@ -1,0 +1,42 @@
+# ---------- 密钥与本地配置（绝不入库）----------
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# ---------- 运行时数据库 ----------
+*.db
+*.sqlite
+*.sqlite3
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# ---------- 前端依赖（本项目为原生 JS，仅作保险）----------
+node_modules/
+dist/
+
+# ---------- IDE / 编辑器 ----------
+.idea/
+.vscode/
+*.iml
+*.swp
+
+# ---------- 日志与临时文件 ----------
+*.log
+logs/
+*.tmp
+
+# ---------- 系统 ----------
+.DS_Store
+Thumbs.db
+desktop.ini

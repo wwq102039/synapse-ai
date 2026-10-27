@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synapse AI - 神经大脑工作室</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Google Fonts removed — system font stack avoids slow loads in mainland China -->
+</head>
+<body>
+    <!-- 移动端侧边栏按钮 -->
+    <button class="mobile-sidebar-toggle" id="mobileSidebarToggle" title="菜单">☰</button>
+
+    <div class="app-container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <div class="logo-icon-core"></div>
+                    </div>
+                    <div class="logo-text">
+                        <h1>Synapse AI</h1>
+                        <span>神经大脑工作室</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>大脑状态</h3>
+                <div class="brain-status" id="brainStatus">
+                    <div class="status-indicator">
+                        <span class="status-dot active" id="statusDot"></span>
+                        <span class="status-ring"></span>
+                    </div>
+                    <span id="statusText">就绪</span>
+                </div>
+                <div class="model-info">
+                    <span>核心模型：</span>
+                    <span class="model-chip" id="modelName">deepseek-chat</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>可用工具 <span class="badge" id="toolCount">14</span></h3>
+                <div class="tools-list" id="toolsList">
+                    <!-- JS 动态加载 -->
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>系统配置</h3>
+                <div class="settings-form">
+                    <label>API 密钥</label>
+                    <input type="password" id="apiKeyInput" placeholder="sk-...">
+                    <label>模型选择</label>
+                    <select id="modelSelect">
+                        <option value="deepseek-chat">deepseek-chat（对话）</option>
+                        <option value="deepseek-reasoner">deepseek-reasoner（推理）</option>
+                    </select>
+                    <button id="saveConfigBtn" class="btn btn-primary">保存配置</button>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="btn-row">
+                    <button id="clearChatBtn" class="btn btn-ghost">清空对话</button>
+                    <button id="toggleBrainBtn" class="btn btn-ghost">大脑可视化</button>
+                </div>
+                <div class="btn-row">
+                    <button id="historyBtn" class="btn btn-ghost">历史记录</button>
+                    <button id="saveChatBtn" class="btn btn-ghost">保存对话</button>
+                </div>
+                <div class="btn-row">
+                    <button id="exportChatBtn" class="btn btn-ghost">导出 JSON</button>
+                    <button id="shortcutsBtn" class="btn btn-ghost">快捷键</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 主区域 -->
+        <main class="main-area" id="mainArea">
+            <!-- 大脑粒子背景（铺满整个主区域） -->
+            <canvas id="brainCanvas"></canvas>
+
+            <!-- 顶部状态条 -->
+            <div class="brain-status-bar" id="brainStatusBar">
+                <div class="thought-stream" id="thoughtStream">
+                    <div class="thought-placeholder">
+                        <span class="neural-pulse"></span>
+                        等待神经信号输入...
+                    </div>
+                </div>
+            </div>
+
+            <!-- 聊天区域 -->
+            <div class="chat-panel" id="chatPanel">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="welcome-message">
+                        <div class="welcome-icon">
+                            <div class="welcome-icon-core"></div>
+                        </div>
+                        <h2>欢迎来到 Synapse AI</h2>
+                        <p class="subtitle">
+                            一个能够<strong>感知</strong>、<strong>决策</strong>、<strong>行动</strong>的 AI 智能体。
+                            <br>搭载 <strong>26+ 种神经工具</strong> — 权威扫描、舆情分析、情报综合、高考预测、文件操作、网页搜索等。
+                        </p>
+                        <div class="suggestion-chips">
+                            <button class="chip" data-msg="分析2026年四川省高考理科650分可以报考哪些大学，推荐冲刺、稳妥和保底院校">🎓 高考志愿分析</button>
+                            <button class="chip" data-msg="搜索教育部关于2026年研究生招生最新政策，分析政策变化趋势">📋 教育政策追踪</button>
+                            <button class="chip" data-msg="分析公众对人工智能专业的就业前景评价和舆情倾向">📊 社会舆情分析</button>
+                            <button class="chip" data-msg="核实'四川大学2026年将在全国扩招1000人'这个说法是否属实">🔍 信息真实性核实</button>
+                            <button class="chip" data-msg="对比四川大学、电子科技大学、西南交通大学在综合排名、就业率、学术实力方面的优劣">⚖ 多维度对比</button>
+                            <button class="chip" data-msg="搜索2026年最新的AI新闻">📰 搜索AI新闻</button>
+                            <button class="chip" data-msg="北京现在天气怎么样？">🌤 北京天气</button>
+                            <button class="chip" data-msg="计算 2的10次方 + 根号144 × 3.14">🔢 数学计算</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <div class="input-wrapper">
+                        <textarea id="chatInput" placeholder="输入消息，与 AI 大脑对话..." rows="1"></textarea>
+                        <button id="sendBtn" class="btn-send" title="发送">
+                            <svg viewBox="0 0 24 24" width="20" height="20">
+                                <path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="input-hint">
+                        <kbd>Enter</kbd> 发送 &nbsp; <kbd>Shift+Enter</kbd> 换行 &nbsp; <kbd>Ctrl+K</kbd> 命令面板
+                    </div>
+                </div>
+            </div>
+
+            <!-- 思维链面板（右侧） -->
+            <div class="thought-chain-panel" id="thoughtChainPanel">
+                <div class="thought-chain-header">
+                    <h3>神经活动日志</h3>
+                    <div class="chain-actions">
+                        <button class="chain-action-btn" id="chainClearBtn" title="清空日志">✕</button>
+                    </div>
+                    <span class="chain-count" id="chainCount">0</span>
+                </div>
+                <div class="thought-chain-list" id="thoughtChainList">
+                    <div class="chain-placeholder">
+                        <div class="placeholder-icon">◌</div>
+                        暂无神经活动。<br>发送消息唤醒 AI 大脑。
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 历史记录弹窗 -->
+    <div class="modal-overlay" id="historyModal" style="display:none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>对话历史</h3>
+                <button class="modal-close" id="historyClose">✕</button>
+            </div>
+            <div class="modal-body" id="historyContent">
+                <p style="color:var(--text-muted);text-align:center;padding:20px;">暂无对话记录。</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" id="historyClearBtn">清空历史</button>
+                <button class="btn btn-primary" id="historyExportBtn">导出 JSON</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 命令面板弹窗 -->
+    <div class="modal-overlay" id="shortcutsModal" style="display:none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>命令面板</h3>
+                <button class="modal-close" id="shortcutsClose">✕</button>
+            </div>
+            <div class="modal-body" id="shortcutsContent" style="font-family:var(--font-mono);font-size:12px;line-height:2;">
+                <div style="color:var(--neon-cyan);">/help</div><span style="color:var(--text-muted);">显示所有可用命令</span>
+                <div style="color:var(--neon-cyan);">/clear</div><span style="color:var(--text-muted);">清空当前对话</span>
+                <div style="color:var(--neon-cyan);">/tools</div><span style="color:var(--text-muted);">列出所有可用工具</span>
+                <div style="color:var(--neon-cyan);">/model</div><span style="color:var(--text-muted);">查看当前模型信息</span>
+                <div style="color:var(--neon-cyan);">/history</div><span style="color:var(--text-muted);">查看对话历史</span>
+                <div style="color:var(--neon-cyan);">/save &lt;文件名&gt;</div><span style="color:var(--text-muted);">保存对话到本地文件</span>
+                <div style="color:var(--neon-cyan);">/export</div><span style="color:var(--text-muted);">导出对话为 JSON</span>
+                <div style="color:var(--neon-cyan);">Ctrl+K</div><span style="color:var(--text-muted);">打开命令面板</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/brain-viz.js"></script>
+    <script src="/static/js/chat.js"></script>
+    <script src="/static/js/tools-panel.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
